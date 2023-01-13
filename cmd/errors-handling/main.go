@@ -1,11 +1,10 @@
 package main
 
 import (
+	"fmt"
+	"github.com/alexdogonin/errors-handling/pkg/common"
 	"github.com/alexdogonin/errors-handling/pkg/repository"
 	"github.com/alexdogonin/errors-handling/pkg/usecase"
-	"log"
-
-	"github.com/pkg/errors"
 )
 
 func main() {
@@ -13,20 +12,27 @@ func main() {
 
 	uc := usecase.New(repo)
 
-	for _, id := range []int{1,2,3} {
+	for _, id := range []int{1, 2, 3} {
 		err := uc.ProcessByID(id)
-		var errConflict usecase.ErrorConflict
-		if errors.As(err, &errConflict) {
-			log.Println("Conflict " + errConflict.Error())
-			continue
+		// предположим, в нашем приложении такая политика ретраев, что мы просто повторяем юзкейс, если в нем
+		// что-то пошло не по плану и это можно повторить
+		if err != nil {
+			if common.IsRetryable(err) {
+				simpleRetry(func() error {
+					return uc.ProcessByID(id)
+				})
+			} else {
+				fmt.Println(err)
+			}
 		}
+	}
+}
 
-		var errNotFound usecase.ErrorNotFound
-		if errors.As(err, &errNotFound) {
-			log.Println("Not Found " + errNotFound.Error())
-			continue
+func simpleRetry(fn func() error) {
+	for i := 0; i < 5; i++ {
+		fmt.Println("повтор, попытка", i)
+		if err := fn(); err == nil {
+			break
 		}
-
-		log.Println("Internal")
 	}
 }

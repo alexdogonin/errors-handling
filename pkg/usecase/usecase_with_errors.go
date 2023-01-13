@@ -1,13 +1,8 @@
 package usecase
 
 import (
-	"github.com/alexdogonin/errors-handling/pkg/repository"
-
 	"github.com/pkg/errors"
 )
-
-type ErrorConflict error
-type ErrorNotFound error
 
 type Repository interface {
 	GetByID(int) error
@@ -24,12 +19,15 @@ func New(repo Repository) *UsecaseWithErrors {
 func (u *UsecaseWithErrors) ProcessByID(id int) error {
 	err := u.repo.GetByID(id)
 	if err != nil {
-		if errors.Is(err, repository.ErrConflict) {
-			return ErrorConflict(errors.Wrapf(err, "process by id, id %d creates a conflict", id))
+		// демонстрация различного поведения в зависимости от ошибок, пришедших снизу по стеку
+		var e ErrNotFound
+		if errors.As(err, &e) {
+			// допустим, если это ошибка not found типа, то мы ее пробрасываем выше
+			return ErrNotFound(errors.Wrapf(err, "process by id, id %d creates a conflict", id))
 		}
 
-		if errors.Is(err, repository.ErrNotFound) {
-			return ErrorNotFound(err)
+		if errors.Is(err, VsePipetz) {
+			panic("не могу обработать!!!")
 		}
 
 		return err
