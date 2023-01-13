@@ -1,10 +1,15 @@
 package repository
 
-import "errors"
+import (
+	"github.com/alexdogonin/errors-handling/pkg/common"
+	"github.com/pkg/errors"
+)
 
 var (
-	ErrConflict = errors.New("conflict")
-	ErrNotFound = errors.New("not found")
+	// это пример, поэтому ошибки тупые
+	ErrFatalPostgresBlya = errors.New("fatal internal posgres sgorel")
+	ErrNotFoundAll       = errors.New("not found voobsche vse")
+	ErrNotFoundSome      = errors.New("not found some records")
 )
 
 type RepoWithErrors struct {
@@ -12,12 +17,21 @@ type RepoWithErrors struct {
 
 func (r *RepoWithErrors) GetByID(id int) error {
 	if id == 1 {
-		return errors.New("not found")
+		return ErrNotFoundAll
 	}
 
 	if id == 2 {
-		return errors.New("conflict")
+		// допустим, это можно повторить
+		return common.Err{
+			true,
+			ErrNotFoundSome,
+		}
 	}
 
-	return errors.New("connection failed")
+	// обернем хорошенько, будто ошибка пришла с нескольких фреймов ниже
+	err := errors.Wrap(ErrFatalPostgresBlya, "ошибка 3")
+	err = errors.Wrap(err, "ошибка 2")
+	err = errors.Wrap(err, "ошибка 1")
+
+	return errors.Wrap(err, "всё развалилось")
 }
