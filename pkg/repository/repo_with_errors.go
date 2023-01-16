@@ -33,5 +33,5 @@ func (r *RepoWithErrors) GetByID(id int) error {
 	err = errors.Wrap(err, "ошибка 2")
 	err = errors.Wrap(err, "ошибка 1")
 
-	return errors.Wrap(err, "всё развалилось")
+	return common.Err{false, errors.Wrap(err, "всё развалилось")}
 }

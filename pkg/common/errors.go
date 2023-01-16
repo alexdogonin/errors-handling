@@ -2,6 +2,9 @@ package common
 
 import "github.com/pkg/errors"
 
+type ErrFatal error    // вообще всё плохо
+type ErrNotFound error // не так страшно
+
 type Err struct {
 	IsRetryable bool
 	Err         error

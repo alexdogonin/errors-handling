@@ -1,10 +1,10 @@
 package usecase
 
-import "github.com/pkg/errors"
-
-type ErrFatal error    // вообще всё плохо
-type ErrNotFound error // не так страшно
+import (
+	"github.com/alexdogonin/errors-handling/pkg/common"
+	"github.com/pkg/errors"
+)
 
 // ошибка, которой мы очень боимся, что они придет в юзкейс
 // да, такая ошибка есть на уровне репы. но мы не должны в юзкейсах знать о чем-либо из репозиториев
-var VsePipetz ErrFatal = errors.New("всё развалилось")
+var VsePipetz common.ErrFatal = errors.New("всё развалилось")

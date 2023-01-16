@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"github.com/alexdogonin/errors-handling/pkg/common"
 	"github.com/pkg/errors"
 )
 
@@ -20,10 +21,10 @@ func (u *UsecaseWithErrors) ProcessByID(id int) error {
 	err := u.repo.GetByID(id)
 	if err != nil {
 		// демонстрация различного поведения в зависимости от ошибок, пришедших снизу по стеку
-		var e ErrNotFound
+		var e common.ErrNotFound
 		if errors.As(err, &e) {
 			// допустим, если это ошибка not found типа, то мы ее пробрасываем выше
-			return ErrNotFound(errors.Wrapf(err, "process by id, id %d creates a conflict", id))
+			return common.ErrNotFound(errors.Wrapf(err, "process by id, id %d creates a conflict", id))
 		}
 
 		if errors.Is(err, VsePipetz) {
