@@ -22,7 +22,7 @@ func (r *RepoWithErrors) GetByID(id int) error {
 
 	if id == 2 {
 		// допустим, это можно повторить
-		return common.Err{
+		return common.ErrNotFound{
 			true,
 			ErrNotFoundSome,
 		}
@@ -33,5 +33,5 @@ func (r *RepoWithErrors) GetByID(id int) error {
 	err = errors.Wrap(err, "ошибка 2")
 	err = errors.Wrap(err, "ошибка 1")
 
-	return common.Err{false, errors.Wrap(err, "всё развалилось")}
+	return common.ErrFatal{false, errors.Wrap(err, "всё развалилось")}
 }
