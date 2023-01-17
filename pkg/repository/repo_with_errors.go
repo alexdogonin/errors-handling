@@ -28,10 +28,9 @@ func (r *RepoWithErrors) GetByID(id int) error {
 		}
 	}
 
-	// обернем хорошенько, будто ошибка пришла с нескольких фреймов ниже
-	err := errors.Wrap(ErrFatalPostgresBlya, "ошибка 3")
+	err := errors.Wrap(common.VsePipetz, "ошибка 1")
 	err = errors.Wrap(err, "ошибка 2")
-	err = errors.Wrap(err, "ошибка 1")
-
-	return common.ErrFatal{false, errors.Wrap(err, "всё развалилось")}
+	err = errors.Wrap(err, "ошибка 3")
+	err = errors.Wrap(err, "ошибка 4")
+	return err
 }

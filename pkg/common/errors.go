@@ -2,6 +2,8 @@ package common
 
 import "github.com/pkg/errors"
 
+var VsePipetz = ErrFatal{false, errors.New("всё развалилось")}
+
 // наша кастомная ошибка
 type Err struct {
 	IsRetryable bool

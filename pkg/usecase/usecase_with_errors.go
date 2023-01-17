@@ -34,7 +34,8 @@ func (u *UsecaseWithErrors) ProcessByID(id int) error {
 			return errors.Wrapf(err, "process by id, id %d creates a conflict", id)
 		}
 
-		if errors.Is(err, VsePipetz) {
+		// здесь будет креш
+		if errors.Is(err, common.VsePipetz) {
 			panic("не могу обработать!!!")
 		}
 
